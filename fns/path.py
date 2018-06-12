@@ -1,3 +1,3 @@
 class Paths:
     class NewsAPI:
-        key_file = "newsapi.json"
+        key_file = "resources/newsapi.json"
