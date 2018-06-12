@@ -46,7 +46,10 @@ def update_markov_model_json(data, model_json):
     return model.to_json()
 
 """
+takes:
     model_json - JSON object of markov model
+returns:
+    generated title of an article
 """
 
 
