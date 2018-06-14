@@ -4,3 +4,4 @@ markovify==0.7.1
 spaCy==2.*
 pydash==4.5.0
 psycopg2==2.7.4
+SQLAlchemy==1.2.8
