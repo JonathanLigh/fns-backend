@@ -6,11 +6,12 @@ class MarkovModel(db.Model):
     __tablename__ = 'markov_models'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String())
+    category = db.Column(db.String())
     model_json = db.Column(JSON)
+    model_type = db.Column(db.String())
 
-    def __init__(self, title, model_json):
-        self.title = title
+    def __init__(self, category, model_json):
+        self.category = category
         self.model_json = model_json
 
     def __repr__(self):
