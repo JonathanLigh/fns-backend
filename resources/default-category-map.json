@@ -1,0 +1,15 @@
+{
+  "newsapi-fns": {
+    "business": "business",
+    "entertainment": "life-arts",
+    "health": "life-arts",
+    "science": "science-tech",
+    "sports": "life-arts",
+    "technology": "science-tech"
+  },
+  "fns-newsapi": {
+    "business": ["business"],
+    "life-arts": ["entertainment", "sports", "health"],
+    "science-tech": ["science", "tech"]
+  }
+}
