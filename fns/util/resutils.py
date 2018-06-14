@@ -3,6 +3,7 @@ import os
 
 from definitions import ROOT_DIR
 from fns.constant.path import Paths
+from fns.constant.strconst import StringConstants
 from fns.util.pathutils import append_file_name
 
 
@@ -18,7 +19,7 @@ def get_api_key():
     return api_json["key"]
 
 
-def get_category_maps(path: str=""):
+def get_category_maps(path: str=StringConstants.EMPTY):
     category_map_path = Paths.Resources.get_default_category_maps() if path is None else path
 
     with open(category_map_path, "r") as fin:

@@ -1,5 +1,8 @@
+from fns.constant.strconst import StringConstants
+
+
 def dirify(dir_name: str):
-    return dir_name if dir_name.endswith("/") else dir_name + "/"
+    return dir_name if dir_name.endswith(StringConstants.FWD_SLASH) else dir_name + StringConstants.FWD_SLASH
 
 
 def append_dir_name(parent_dir_path, dir_name):

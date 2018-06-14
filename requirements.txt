@@ -2,3 +2,4 @@ Flask==1.0.2
 newsapi-python==0.2.3
 markovify==0.7.1
 spaCy==2.*
+pydash==4.5.0

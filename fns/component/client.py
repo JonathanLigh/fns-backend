@@ -1,8 +1,8 @@
-from typing import List
 from newsapi import NewsApiClient
+from typing import List
 
-from constant.strconst import StringConstants
-from util.resutils import *
+from fns.constant.strconst import StringConstants
+from fns.util.resutils import get_api_key, get_category_maps
 
 
 class FNSClient:
@@ -10,8 +10,8 @@ class FNSClient:
         self.news_client = NewsApiClient(api_key=get_api_key())
         self.category_map = get_category_maps()
 
-    def get_sources_by_category(self, category: str):
-        news_api_categories = self.category_map["fns-newsapi"].get(category)
+    def get_sources_by_category(self, fns_category: str):
+        news_api_categories = self.category_map["fns-newsapi"].get(fns_category)
 
         all_sources = []
         for news_api_category in news_api_categories:
@@ -40,3 +40,13 @@ class FNSClient:
             remaining_articles = total_num_articles - len(articles_by_sources)
 
         return articles_by_sources
+
+    def get_articles_by_categories(self, fns_categories: List[str]):
+        sources_by_categories = [self.get_sources_by_category(category) for category in fns_categories]
+        articles_by_sources_by_categories = [self.get_articles_by_sources(sources) for sources in sources_by_categories]
+
+        return {
+            fns_category: articles_by_sources_by_category
+            for fns_category, articles_by_sources_by_category
+            in zip(fns_categories, articles_by_sources_by_categories)
+        }
