@@ -7,6 +7,7 @@ nlp = spacy.load("en")
 
 
 #   markovify's github page recommended we use spacy to override functions for much better performance on large entries
+#   use this instead of markovify.Text for making models
 
 
 class POSifiedText(markovify.Text):
@@ -19,6 +20,20 @@ class POSifiedText(markovify.Text):
         return sentence
 
 
+def gen_sentence(model: POSifiedText, subject: str) -> str:
+    sentence: str = None
+    i = 0
+    limit = 100
+    while sentence is None:
+        sentence = model.make_sentence_with_start(beginning=subject) + ' '
+        if i is limit:
+            sentence = ''
+            break
+        else:
+            i += 1
+    return sentence
+
+
 """
 takes:
     data - array of text, could be either array of article titles, or array of article descriptions
@@ -29,15 +44,14 @@ returns:
 
 
 def update_markov_model_json(data, model_json):
-
     #   reconstitutes markov model from json
     if model_json:
-        model = markovify.Text.from_json(model_json)
+        model = POSifiedText.from_json(model_json)
     else:
         model = None
 
     for phrase in data:
-        new_model = markovify.Text(phrase, retain_original=False)
+        new_model = POSifiedText(phrase, retain_original=False)
         if model:
             model = markovify.combine(models=[new_model, model])
         else:
@@ -55,8 +69,10 @@ returns:
 
 
 def gen_title_from_model_json(model_json):
-    model = markovify.Text.from_json(model_json)
-    title = None
+    model = POSifiedText.from_json(model_json)
+    title: str = None
+    i = 0
+    limit = 100
     while title is None:
         title = model.make_short_sentence(max_chars=120, min_chars=60)
     #   got optimal article character length from here: https://coschedule.com/blog/best-headline-length/
@@ -75,15 +91,10 @@ returns:
 def gen_article_from_model_json(model_json, article_title):
     parsed_sentence = ParsedSentence(article_title)
     subject: str = parsed_sentence.subject
-    model = markovify.Text.from_json(model_json)
+    model = POSifiedText.from_json(model_json)
     article: str = ""
     for i in range(random.randint(5, 10)):
-        sentence: None = None
-        while sentence is None:
-                sentence: str = model.make_sentence_with_start(beginning=subject)
-        parsed_sentence = ParsedSentence(sentence)
-
-        article: str = article + ' ' + sentence
+        article: str = article + gen_sentence(model=model, subject=subject)
 
         #   now we choose the subject of the next sentence
         if parsed_sentence.direct_object is not None:
@@ -102,7 +113,7 @@ def gen_article_from_model_json(model_json, article_title):
 Class purpose:
     defining an interpreted sentence's logical structural components. 
     I.E. it's subject, direct objcet, and indirect object
-    
+
 """
 
 
@@ -118,7 +129,6 @@ class ParsedSentence:
         ParsedSentence containing the subject, indirect object, and direct object of that sentence
     """
 
-
     def __init__(self, sentence):
         text = nlp(sentence)
         for word in text:
@@ -128,7 +138,3 @@ class ParsedSentence:
                 self.indirect_object = word.orth_
             if word.dep_ == "dobj":
                 self.direct_object = word.orth_
-
-
-
-
