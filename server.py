@@ -1,13 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from colorama import Fore
+from colorama import Fore, init
+init(autoreset=True)
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/fns"
 db = SQLAlchemy(app)
-
-from fns.db.models import MarkovModel
+db.init_app(app)
+db.create_all()
 
 @app.route('/')
 def hello_world():
