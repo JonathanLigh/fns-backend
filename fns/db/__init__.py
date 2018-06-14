@@ -1,6 +1,2 @@
-from sqlalchemy import create_engine
+import fns.db.models
 
-db = create_engine("postgresql://localhost:5432/fns")
-
-
-print(db)
