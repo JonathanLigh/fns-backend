@@ -1,26 +1,11 @@
 import markovify
-import spacy
 import random
 
-#   natural language processing object for picking parts of speech
-nlp = spacy.load("en")
+from definitions import spacy_nlp_model
+from fns.structure.text import NLPText, NLPSentence
 
 
-#   markovify's github page recommended we use spacy to override functions for much better performance on large entries
-#   use this instead of markovify.Text for making models
-
-
-class POSifiedText(markovify.Text):
-
-    def word_split(self, sentence):
-        return ["::".join((word.orth_, word.pos)) for word in nlp(sentence)]
-
-    def word_join(self, words):
-        sentence = " ".join(word.split("::")[0] for word in words)
-        return sentence
-
-
-def gen_sentence(model: POSifiedText, subject: str) -> str:
+def gen_sentence(model: NLPText, subject: str) -> str:
     sentence: str = None
     i = 0
     limit = 100
@@ -46,12 +31,12 @@ returns:
 def update_markov_model_json(data, model_json):
     #   reconstitutes markov model from json
     if model_json:
-        model = POSifiedText.from_json(model_json)
+        model = NLPText.from_json(model_json)
     else:
         model = None
 
     for phrase in data:
-        new_model = POSifiedText(phrase, retain_original=False)
+        new_model = NLPText(phrase, retain_original=False)
         if model:
             model = markovify.combine(models=[new_model, model])
         else:
@@ -69,7 +54,7 @@ returns:
 
 
 def gen_title_from_model_json(model_json):
-    model = POSifiedText.from_json(model_json)
+    model = NLPText.from_json(model_json)
     title: str = None
     i = 0
     limit = 100
@@ -89,52 +74,25 @@ returns:
 
 
 def gen_article_from_model_json(model_json, article_title):
-    parsed_sentence = ParsedSentence(article_title)
-    subject: str = parsed_sentence.subject
-    model = POSifiedText.from_json(model_json)
-    article: str = ""
+    parsed_tokens = spacy_nlp_model(article_title)
+    parsed_sentence = NLPSentence(parsed_tokens)
+
+    subject = parsed_sentence.subj_tokens
+    model = NLPText.from_json(model_json)
+
+    article = ""
+
     for i in range(random.randint(5, 10)):
-        article: str = article + gen_sentence(model=model, subject=subject)
+        article = article + gen_sentence(model=model, subject=subject)
 
         #   now we choose the subject of the next sentence
-        if parsed_sentence.direct_object is not None:
-            subject = parsed_sentence.direct_object
-        elif parsed_sentence.indirect_object is not None:
-            subject = parsed_sentence.indirect_object
-        elif parsed_sentence.subject is not None:
-            subject = parsed_sentence.subject
+        if parsed_sentence.dobj_tokens is not None:
+            subject = parsed_sentence.dobj_tokens
+        elif parsed_sentence.iobj_tokens is not None:
+            subject = parsed_sentence.iobj_tokens
+        elif parsed_sentence.subj_tokens is not None:
+            subject = parsed_sentence.subj_tokens
         #   if the previous sentence does not contain a direct object, indirect object, or subject,
         #   we continue with the same subject
 
     return article
-
-
-"""
-Class purpose:
-    defining an interpreted sentence's logical structural components. 
-    I.E. it's subject, direct objcet, and indirect object
-
-"""
-
-
-class ParsedSentence:
-    subject = ""
-    direct_object = ""
-    indirect_object = ""
-
-    """
-    takes:
-        sentence - string that represents a sentence
-    returns:
-        ParsedSentence containing the subject, indirect object, and direct object of that sentence
-    """
-
-    def __init__(self, sentence):
-        text = nlp(sentence)
-        for word in text:
-            if word.dep_ == "nsubj":
-                self.subject = word.orth_
-            if word.dep_ == "iobj":
-                self.indirect_object = word.orth_
-            if word.dep_ == "dobj":
-                self.direct_object = word.orth_
