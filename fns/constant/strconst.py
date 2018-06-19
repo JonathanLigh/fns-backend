@@ -6,3 +6,4 @@ class StringConstants:
     SEMICOLON = ";"
     SPACE = " "
     FWD_SLASH = "/"
+    NEWLINE = "\n"

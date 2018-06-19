@@ -24,3 +24,10 @@ def get_category_maps(path: str=StringConstants.EMPTY):
 
     with open(category_map_path, "r") as fin:
         return json.load(fin)
+
+
+def get_database_paths():
+    database_paths_path = Paths.Resources.get_database_paths()
+
+    with open(database_paths_path, "r") as fin:
+        return json.load(fin)

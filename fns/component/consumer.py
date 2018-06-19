@@ -1,14 +1,22 @@
 import markovify
 
-from fns.util.resutils import get_category_maps
+from fns.constant.strconst import StringConstants
 
 
-class ArticleConsumer:
-    def __init__(self):
-        self.category_maps = get_category_maps()
+def create_title_models_by_category(articles_by_categories):
+    return {
+        category: _create_model_of_article_field("title", articles_by_categories[category])
+        for category in articles_by_categories
+    }
 
-    def consume_real_articles(self, articles_by_categories):
-        pass
 
-    def _consume_real_article_titles(self, articles_by_category):
-        pass
+def create_description_models_by_category(articles_by_categories):
+    return {
+        category: _create_model_of_article_field("description", articles_by_categories[category])
+        for category in articles_by_categories
+    }
+
+
+def _create_model_of_article_field(field_type, articles):
+    field_text = StringConstants.NEWLINE.join([article[field_type] for article in articles])
+    return markovify.Text(field_text)
