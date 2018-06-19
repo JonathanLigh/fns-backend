@@ -1,15 +1,16 @@
 import cuid
-from server import db
+from fns.db import Base
+from sqlalchemy import Column, String, Integer, Date
 
 
-class Article(db.Model):
+class Article(Base):
     __tablename__ = "articles"
 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String)
-    content = db.Column(db.String)
-    date = db.Column(db.Date)
-    category = db.Column(db.String)
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    content = Column(String)
+    date = Column(Date)
+    category = Column(String)
 
     def __init__(self, title, content, date, category):
         self.id = cuid.cuid()
