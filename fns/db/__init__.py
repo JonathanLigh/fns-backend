@@ -1,24 +1,19 @@
-from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
 
-engine = create_engine('postgresql://localhost:5432/fns')
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+from fns.db.session import create_db_session
+from fns.db.models.article import Article
+from fns.db.models.markov import Markov
+from fns.util.resutils import get_database_paths
+
+database_paths = get_database_paths()
+engine, db_session = create_db_session(database_paths["LOCAL"])
 
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+
 def init_db():
-    """
-    import all defined models here so they will be registered on the metadata
-    """
-    from fns.db.models import article, markov
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    #   create fixtures (permission roles)
-
-
-
+    # TODO: create fixtures (permission roles)
