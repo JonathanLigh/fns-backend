@@ -1,13 +1,14 @@
-from server import db
+from fns.db import Base
+from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import JSON
 
 
-class MarkovModel(db.Model):
-    __tablename__ = 'markov_models'
+class Markov(Base):
+    __tablename__ = 'markov'
 
-    category = db.Column(db.String, primary_key=True)
-    title = db.Column(db.String())
-    model_json = db.Column(JSON)
+    category = Column(String, primary_key=True)
+    title = Column(String())
+    model_json = Column(JSON)
 
     def __init__(self, category, title, model_json):
         self.category = category
@@ -15,4 +16,4 @@ class MarkovModel(db.Model):
         self.model_json = model_json
 
     def __repr__(self):
-        return '<markov_model category={}>'.format(self.category)
+        return '<markov category={}>'.format(self.category)
