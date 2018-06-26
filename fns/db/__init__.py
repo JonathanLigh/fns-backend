@@ -14,7 +14,7 @@ def init_db():
     from fns.db.models.article import Article
     from fns.db.models.markov import Markov
 
-    Base.metadata.drop_all(bind=engine)
+    # Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
     # TODO: create fixtures (permission roles)
