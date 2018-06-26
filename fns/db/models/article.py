@@ -27,6 +27,6 @@ class Article(Base):
             "id": self.id,
             "title": self.title,
             "content": self.content,
-            # "date": self.date,
+            "date": str(self.date),
             "category": self.category
         }
