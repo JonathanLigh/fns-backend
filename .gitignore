@@ -107,3 +107,4 @@ venv.bak/
 
 # Keys
 /resources/keychain/
+/resources/database-paths.json

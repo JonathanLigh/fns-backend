@@ -16,7 +16,8 @@ class FNSClient:
         all_sources = []
         for news_api_category in news_api_categories:
             sources = self.news_client.get_sources(category=news_api_category)["sources"]
-            all_sources.extend(sources)
+            source_names = [source["name"] for source in sources]
+            all_sources.extend(source_names)
 
         return all_sources
 
@@ -35,6 +36,9 @@ class FNSClient:
 
         while remaining_articles > 0:
             page_num += 1
+            if page_num >= 2:
+                break
+
             page_articles = self.news_client.get_everything(sources=csv_sources, page=page_num, page_size=100)["articles"]
             articles_by_sources.extend(page_articles)
             remaining_articles = total_num_articles - len(articles_by_sources)

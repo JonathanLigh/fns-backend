@@ -10,6 +10,6 @@
   "fns-newsapi": {
     "business": ["business"],
     "life-arts": ["entertainment", "sports", "health"],
-    "science-tech": ["science", "tech"]
+    "science-tech": ["science", "technology"]
   }
 }

@@ -1,5 +1,0 @@
-{
-  "LOCAL": "postgresql://localhost:5432/fns",
-  "DEV": "",
-  "PROD": ""
-}
