@@ -21,3 +21,12 @@ class Article(Base):
 
     def __repr__(self):
         return "<article id={}>".format(self.id)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "content": self.content,
+            # "date": self.date,
+            "category": self.category
+        }
