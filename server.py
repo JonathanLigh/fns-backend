@@ -14,9 +14,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/fns"
 def hello_world():
     return 'Hello, World!'
 
+
 @app.teardown_appcontext
 def shutdown_session(ecpection=None):
     db_session.remove()
+
 
 if __name__ == '__main__':
     init_db()

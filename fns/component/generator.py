@@ -2,18 +2,12 @@ from fns.constant.strconst import StringConstants
 
 
 class FNSGenerator:
-    def __init__(self, title_model, description_model):
+    def __init__(self, title_model, content_model):
         self.title_model = title_model
-        self.description_model = description_model
+        self.content_model = content_model
 
-    def load_forerunner_model(self):
-        pass
-
-    def produce_articles(self):
-        title = self.title_model.make_short_sentence(max_chars=120, min_chars=60)
-        description = StringConstants.SPACE.join([self._generate_description_sentence() for _ in range(5)])
-
-        return title, description
+    def produce_article(self):
+        return {"title": self._generate_title(), "content": self._generate_content()}
 
     def _generate_title(self):
         title = None
@@ -29,12 +23,15 @@ class FNSGenerator:
 
         return title
 
-    def _generate_description_sentence(self):
+    def _generate_content(self):
+        return StringConstants.SPACE.join([self._generate_content_sentence() for _ in range(30)])
+
+    def _generate_content_sentence(self):
         description = None
 
         for _ in range(30):
             if description is None:
-                description = self.description_model.make_sentence(max_chars=120, min_chars=60)
+                description = self.content_model.make_sentence(max_chars=120, min_chars=60)
             else:
                 break
 

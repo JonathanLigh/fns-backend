@@ -10,7 +10,7 @@ def create_title_models_by_category(articles_by_categories):
     }
 
 
-def create_description_models_by_category(articles_by_categories):
+def create_content_models_by_category(articles_by_categories):
     return {
         category: _create_model_of_article_field("description", articles_by_categories[category])
         for category in articles_by_categories
