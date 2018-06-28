@@ -1,3 +1,5 @@
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 from flask import Flask, json, Response
 
 from fns.db import init_db, db_session
@@ -9,6 +11,10 @@ init(autoreset=True)
 app = Flask(__name__)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost:5432/fns"
+
+# scheduler = BackgroundScheduler()
+# scheduler.start()
+# scheduler.add_job()
 
 
 @app.route('/')
