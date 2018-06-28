@@ -36,7 +36,7 @@ def get_articles_by_category_api(category):
 
 
 @app.teardown_appcontext
-def shutdown_session():
+def shutdown_session(exception=None):
     db_session.remove()
 
 
