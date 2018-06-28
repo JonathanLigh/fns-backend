@@ -1,3 +1,4 @@
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from flask import Flask, json, Response
@@ -42,4 +43,5 @@ def shutdown_session(exception=None):
 
 if __name__ == '__main__':
     # init_db()
-    app.run()
+    port = os.environ.get("PORT") if os.environ.get("PORT") is not None else 5000
+    app.run(port)
