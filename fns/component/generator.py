@@ -1,10 +1,15 @@
 from fns.constant.strconst import StringConstants
+from fns.structure.text import NLPText
 
 
 class FNSGenerator:
     def __init__(self, title_model, content_model):
         self.title_model = title_model
         self.content_model = content_model
+
+    @staticmethod
+    def load_from_json(title_model_json, content_model_json):
+        return FNSGenerator(NLPText.from_json(title_model_json), NLPText.from_json(content_model_json))
 
     def produce_article(self):
         return {"title": self._generate_title(), "content": self._generate_content()}

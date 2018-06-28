@@ -1,14 +1,13 @@
+from fns import fns_categories
 from fns.component import *
-from fns.db import db_session, init_db
-from fns.db.models.article import Article
-from fns.db.models.markov import Markov
+from fns.db import db_session
+from fns.db.models import Article, Markov
 from fns.structure.text import NLPText
 
 
 class FakeNewsSimulator:
     def __init__(self):
         self.fns_client = FNSClient()
-        self.fns_categories = ["business", "life-arts", "science-tech"]
 
         self.title_models_by_categories, self.content_models_by_categories = self._load_models()
         self.generators = self._create_generators()
@@ -33,7 +32,7 @@ class FakeNewsSimulator:
         title_models_by_categories = {}
         content_models_by_categories = {}
 
-        for category in self.fns_categories:
+        for category in fns_categories:
             markov_models_instance = Markov.query.get(category)
 
             if markov_models_instance is not None:
@@ -43,7 +42,7 @@ class FakeNewsSimulator:
         return title_models_by_categories, content_models_by_categories
 
     def _generate_models(self):
-        articles_by_categories = self.fns_client.get_articles_by_categories(self.fns_categories)
+        articles_by_categories = self.fns_client.get_articles_by_categories(fns_categories)
 
         title_models_by_categories = create_title_models_by_category(articles_by_categories)
         content_models_by_categories = create_content_models_by_category(articles_by_categories)
@@ -56,25 +55,20 @@ class FakeNewsSimulator:
                 markov_models_instance = Markov(category, title_model.to_json(), content_model.to_json())
 
                 db_session.add(markov_models_instance)
-                db_session.commit()
+
+        db_session.commit()
 
         return title_models_by_categories, content_models_by_categories
 
     def generate_fake_articles(self):
-        articles_by_category = {category: self.generators[category].produce_article() for category in self.fns_categories}
+        articles_by_category = {category: self.generators[category].produce_article() for category in fns_categories}
 
         for category in articles_by_category:
             article_dict = articles_by_category[category]
             article_instance = Article(article_dict["title"], article_dict["content"], category)
 
             db_session.add(article_instance)
-            db_session.commit()
+
+        db_session.commit()
 
         return articles_by_category
-
-
-if __name__ == "__main__":
-    # TODO: if database does not exist, initialize the db
-    init_db()
-    simulator = FakeNewsSimulator()
-    print(simulator.generate_fake_articles())
