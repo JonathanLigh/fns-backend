@@ -1,3 +1,4 @@
+import os
 from newsapi import NewsApiClient
 from typing import List
 
@@ -7,7 +8,8 @@ from fns.util.resutils import get_api_key, get_category_maps
 
 class FNSClient:
     def __init__(self):
-        self.news_client = NewsApiClient(api_key=get_api_key())
+        api_key = os.environ.get("NEWS_API_KEY") if os.environ.get("NEWS_API_KEY") else get_api_key()
+        self.news_client = NewsApiClient(api_key=api_key)
         self.category_map = get_category_maps()
 
     def get_sources_by_category(self, fns_category: str):
